@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.H. Portfolio</title>
+
+    <!-- Fonts: Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+    <style>
+        /* --- DESIGN SYSTEM --- */
+        :root {
+            --bg-body: #050505;
+            --bg-card: #111111;
+            --bg-glass: rgba(25, 25, 25, 0.6);
+
+            --text-primary: #F2F2F2;
+            --text-secondary: #A1A1A1;
+            --text-muted: #555555;
+
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+
+            /* Typography Update: Pretendard for everything */
+            --font-display: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+            --nav-height: 80px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            /* Added here to prevent horizontal scrollbar globally */
+        }
+
+        /* --- LAYOUT UTILS --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: calc(var(--nav-height) + 4rem) 2rem 8rem;
+            /* Removed overflow-x: hidden so marquee can break out of container width */
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        /* --- NAVIGATION (Pill Style) --- */
+        nav {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+            /* Let clicks pass through around the pill */
+            z-index: 1000;
+        }
+
+        .nav-pill {
+            pointer-events: auto;
+            display: flex;
+            gap: 0.25rem;
+            background: rgba(15, 15, 15, 0.8);
+            padding: 6px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-full);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn.active {
+            color: var(--bg-body);
+            background: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+        }
+
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* --- MARQUEE ANIMATION --- */
+        .marquee-wrapper {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            overflow: hidden;
+            margin-bottom: 4rem;
+            margin-top: 4rem;
+            /* Removed mask-image to prevent cutting off edges */
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 2rem;
+            width: fit-content;
+            animation: scroll 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50% - 1rem));
+            }
+
+            /* Move by half track width */
+        }
+
+        .marquee-item {
+            width: 320px;
+            height: 200px;
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gradients for Marquee items */
+        .marquee-item:nth-child(1n) {
+            background: linear-gradient(135deg, #1A1A1A, #0F0F0F);
+        }
+
+        .marquee-item:nth-child(2n) {
+            background: linear-gradient(135deg, #1f1f1f, #121212);
+        }
+
+        .marquee-item:nth-child(3n) {
+            background: linear-gradient(135deg, #252525, #151515);
+        }
+
+        /* --- SECTIONS --- */
+        .section {
+            display: none;
+            opacity: 0;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- CARDS (Visual Enhancement) --- */
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            group: project;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+        }
+
+        .card-image-placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            /* background removed from here, moved to .card-image-bg */
+            position: relative;
+            overflow: hidden;
+            background: #111;
+            /* fallback bg color */
+        }
+
+        .card-image-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .project-card:hover .card-image-bg {
+            transform: scale(1.1);
+        }
+
+        .card-image-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-style: italic;
+        }
+
+        /* Subtle abstract shapes in placeholder */
+        .card-image-placeholder::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            top: 20%;
+            left: 20%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-full);
+        }
+
+        /* --- DETAIL PAGE --- */
+        .detail-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .detail-hero-img {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #151515, #050505);
+            border-radius: var(--radius-lg);
+            margin-bottom: 4rem;
+            border: 1px solid var(--border-light);
+        }
+
+        /* --- FOOTER / CTA --- */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--text-primary);
+            color: var(--bg-body);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav>
+        <div class="nav-pill"><button class="nav-btn active" onclick="navigate('intro')">Intro</button><button
+                class="nav-btn" onclick="navigate('work')">Work</button><button class="nav-btn"
+                onclick="navigate('writing')">Writing</button><button class="nav-btn"
+                onclick="navigate('resume')">Info</button></div>
+    </nav>
+    <div class="container">
+        < !-- INTRO -->
+            <div id="intro" class="section active">
+                <div style="text-align: center; padding-top: 4rem; max-width: 800px; margin: 0 auto;">
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500;">Seong Seunghwan —
+                        Product Designer</p>
+                    <h1 class="hero-text">Designing systems<br>that <span
+                            style="color: var(--text-secondary);">clarify</span>chaos. </h1>
+                    <p style="margin-bottom: 4rem; color: var(--text-secondary); font-size: 1.25rem;">I build digital
+                        products with a focus on structure,
+                        intentionality,
+                        and removing the non-essential. </p>
+                </div>
+                < !-- MARQUEE IMAGE SCROLLER -->
+                    <div class="marquee-wrapper">
+                        <div class="marquee-track">
+                            < !-- Duplicate items for seamless loop (Total 10 items, 5 distinct duplicated) -->
+                                <div class="marquee-item">Dashboard UI</div>
+                                <div class="marquee-item">Mobile App</div>
+                                <div class="marquee-item">Design Sys</div>
+                                <div class="marquee-item">Data Viz</div>
+                                <div class="marquee-item">Prototype</div>
+                                < !-- Doubles -->
+                                    <div class="marquee-item">Dashboard UI</div>
+                                    <div class="marquee-item">Mobile App</div>
+                                    <div class="marquee-item">Design Sys</div>
+                                    <div class="marquee-item">Data Viz</div>
+                                    <div class="marquee-item">Prototype</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center;"><button class="nav-btn"
+                            style="border: 1px solid var(--border-light); color: var(--text-primary);"
+                            onclick="navigate('work')">View Selected Work ↓ </button></div>
+            </div>
+            < !-- WORK INDEX -->
+                <div id="work" class="section"><span class="section-title">Case Studies</span>
+                    <div class="grid-2" id="project-list">
+                        < !-- Javascript will populate this -->
+                    </div>
+                </div>
+                < !-- WRITING INDEX -->
+                    <div id="writing" class="section"><span class="section-title">Thoughts & Analysis</span>
+                        <div class="grid-2" id="writing-list">
+                            < !-- Javascript will populate this -->
+                        </div>
+                    </div>
+                    < !-- DETAIL VIEW (Shared for Work & Writing) -->
+                        <div id="detail" class="section"><button id="back-btn" onclick="navigate('work')" style="
+ background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        ">← Back</button>
+
+                            <div id="detail-content"></div>
+                        </div>
+                        < !-- RESUME / INFO -->
+                            <div id="resume" class="section">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+                                    <div><span class="section-title">About</span><img src="public/assets/profile.png"
+                                            alt="Profile" style="
+ width: 160px;
+        aspect-ratio: 3/4;
+        object-fit: cover;
+        border-radius: var(--radius-lg);
+        margin-bottom: 2rem;
+        display: block;
+
+        ">
+                                        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Calm,
+                                            process-driven,
+                                            <br>and resilient.
+                                        </h2>
+                                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">I have over 5
+                                            years of experience in product design,
+                                            focusing on complex enterprise tools and financial systems. I believe that
+                                            good design is 90% thinking and 10% decoration. </p><a href="#"
+                                            class="cta-button">Download Resume</a>
+                                    </div>
+                                    <div><span class="section-title">Experience</span>
+                                        <ul style="list-style: none; color: var(--text-secondary);">
+                                            <li
+                                                style="border-bottom: 1px solid var(--border-light); padding: 1rem 0; display: flex; justify-content: space-between;">
+                                                <span>플라즈마교육</span><span>2025.08 — 2025.10</span>
+                                            </li>
+                                            <li
+                                                style="border-bottom: 1px solid var(--border-light); padding: 1rem 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                                                <div style="display: flex; justify-content: space-between;"><span>㈜
+                                                        HITTHEPiC</span><span>2023.07 — 2025.04</span></div><span
+                                                    style="font-size: 0.85rem; color: var(--text-muted);">2023.07-24.07
+                                                    (정규직),
+                                                    24.08-25.04 (파트타임) </span>
+                                            </li>
+                                            <li
+                                                style="border-bottom: 1px solid var(--border-light); padding: 1rem 0; display: flex; justify-content: space-between;">
+                                                <span>㈜Vtok</span><span>2022.01 — 2023.05</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+    </div>
+    <script>const projects = [{
+            id: 'financial',
+            title: 'Finance Dashboard',
+            desc: 'Reducing cognitive load for high-frequency trading platforms.',
+            tags: ['Fintech', 'Systems', '2024'],
+            color: '#1a1f2c',
+            thumbnail: 'public/assets/finance-thumb.png'
+        }
+
+            ,
+        {
+            id: 'mobile',
+            title: 'Acme Mobile',
+            desc: 'A complete overhaul of the mobile banking experience for 2M users.',
+            tags: ['Mobile', 'Consumer', '2023'],
+            color: '#2c1a1a'
+        }
+
+            ,
+        {
+            id: 'design-system',
+            title: 'Core Design System',
+            desc: 'Scaling a unified design language across 12 distinct product lines.',
+            tags: ['Infrastructure', 'Scale', '2022'],
+            color: '#1a2c20'
+        }
+
+            ,
+        {
+            id: 'analytics',
+            title: 'DADA Design System',
+            desc: 'Making complex datasets accessible and actionable for non-experts.',
+            tags: ['Web App', 'Design System', '2025'],
+            color: '#2c251a',
+            thumbnail: 'public/assets/dada-thumb.png'
+        }
+
+        ];
+
+        const writings = [{
+            id: 'brunch-2',
+            title: '디자인 시스템 개편의 시작 첫 번째',
+            desc: '',
+            tags: ['Design System'],
+            color: '#1a1f2c',
+            externalUrl: 'https://brunch.co.kr/@sam8338/2',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/LIZYWBV4NaC4f8STwSkkzdCxUpg.png'
+        }
+
+            ,
+        {
+            id: 'brunch-3',
+            title: 'SSG PAY 가입만 했을 뿐, 거의 사용하지 않았다.',
+            desc: '',
+            tags: ['SSG PAY', 'Renewal', 'UX'],
+            color: '#333333',
+            externalUrl: 'https://brunch.co.kr/@sam8338/3',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/k5tKNRHepk-pBahXz7IUhh9cgvU.png'
+        }
+
+            ,
+        {
+            id: 'brunch-4',
+            title: 'SSG PAY 리뉴얼 첫 번째',
+            desc: '',
+            tags: ['SSG PAY', 'Renewal', 'UX'],
+            color: '#1a2c20',
+            externalUrl: 'https://brunch.co.kr/@sam8338/4',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/gDSF4WBu5x5deDdbG6YQgKK5-l0.png'
+        }
+
+            ,
+        {
+            id: 'brunch-5',
+            title: 'SSG PAY 리뉴얼 두 번째',
+            desc: '',
+            tags: ['SSG PAY', 'Renewal', 'UX'],
+            color: '#2c1a1a',
+            externalUrl: 'https://brunch.co.kr/@sam8338/5',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/ztj2xjf_EcQ7dA9cWc04s1nvFA8.png'
+        }
+
+            ,
+        {
+            id: 'brunch-6',
+            title: 'SSG PAY 리뉴얼 세 번째',
+            desc: '',
+            tags: ['SSG PAY', 'Renewal', 'UX'],
+            color: '#1a1f2c',
+            externalUrl: 'https://brunch.co.kr/@sam8338/6',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/FM2Khu-SeUvbA_UQsd_elWRqGzE.png'
+        }
+
+            ,
+        {
+            id: 'brunch-7',
+            title: '디자인 시스템 개편의 시작 두 번째',
+            desc: '',
+            tags: ['Design System'],
+            color: '#2c251a',
+            externalUrl: 'https://brunch.co.kr/@sam8338/7',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/WP1EvJzh-XhP-U8bfiBccpdZ070.png'
+        }
+
+            ,
+        {
+            id: 'brunch-8',
+            title: 'SSG PAY 리뉴얼 마지막 이야기',
+            desc: '',
+            tags: ['SSG PAY', 'Renewal', 'UX'],
+            color: '#333333',
+            externalUrl: 'https://brunch.co.kr/@sam8338/8',
+            thumbnail: 'https://img1.daumcdn.net/thumb/R1280x0.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/9v94/image/vADL2vX9aa7Oa0B4zW1VRFjNFbo.png'
+        }
+
+        ];
+
+        function init() {
+            // Render Projects
+            const list = document.getElementById('project-list');
+            list.innerHTML = projects.map(p => createCard(p, 'work')).join('');
+
+            // Render Writings
+            const writingList = document.getElementById('writing-list');
+            writingList.innerHTML = writings.map(w => createCard(w, 'writing')).join('');
+
+            // Render Intro Marquee
+            renderMarquee();
+        }
+
+        function renderMarquee() {
+            const track = document.querySelector('.marquee-track');
+
+            // Only show projects (Work), exclude writings
+            let items = [...projects];
+
+            // Shuffle items (Fisher-Yates)
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [items[i], items[j]] = [items[j], items[i]];
+            }
+
+            // Create marquee items
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'marquee-item';
+                el.onclick = () => showDetail(item.id, 'work'); // Assume type is work for marquee
+
+                const imageStyle = item.thumbnail
+                    ? `background-image: url('${item.thumbnail}'); background-size: cover; background-position: center;`
+                    : `background: linear-gradient(135deg, ${item.color}, #111);`;
+
+                el.innerHTML = `<div style="width:100%; height:100%; ${imageStyle} border-radius: var(--radius-md);"></div>`;
+                track.appendChild(el);
+            });
+
+            // Clone for seamless loop
+            const clone = track.cloneNode(true);
+            track.parentNode.appendChild(clone);
+        }
+
+        function createCard(item, type) {
+            const imageStyle = item.thumbnail
+                ? `background-image: url('${item.thumbnail}'); background-size: cover; background-position: center;`
+                : `background: linear-gradient(135deg, ${item.color}, #111);`;
+
+            const externalIcon = item.externalUrl
+                ? `<span style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; backdrop-filter: blur(4px);">↗ Brunch</span>`
+                : '';
+
+            const placeholderText = item.thumbnail ? ''
+                : `<span>${item.title.substring(0, 10)}...</span>`;
+
+            const descHtml = item.desc ? `<p class="card-desc">${item.desc}</p>` : '';
+
+            return `
+            <div class="project-card" onclick="showDetail('${item.id}', '${type}')">
+                <div class="card-image-placeholder">
+                    <div class="card-image-bg" style="${imageStyle}"></div>
+                    <div class="card-image-content">
+                        ${placeholderText}
+                        ${externalIcon}
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags">
+                        ${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                    <h3 class="card-title" style="margin-top: 1rem;">${item.title}</h3>
+                    ${descHtml}
+                </div>
+            </div>
+            `;
+        }
+
+        function navigate(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            // Update Nav State
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const btnText = btn.innerText.toLowerCase();
+                const target = id === 'resume' ? 'info' : id;
+                btn.classList.toggle('active', btnText === target);
+            });
+            window.scrollTo(0, 0);
+        }
+
+        function showDetail(id, type) {
+            const collection = type === 'writing' ? writings : projects;
+            const item = collection.find(i => i.id === id);
+
+            if (!item) return;
+
+            // HANDLE EXTERNAL LINKS
+            if (item.externalUrl) {
+                window.open(item.externalUrl, '_blank');
+                return;
+            }
+
+            // Normal Detail View Logic (for Work items)
+            let content = item.content;
+
+            if (!content) {
+                content = `
+                <div class="detail-header">
+                    <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">${item.title}</h1>
+                    <p style="font-size: 1.25rem; color: var(--text-secondary);">${item.desc}</p>
+                </div>
+                <div class="detail-hero-img" style="background: linear-gradient(135deg, ${item.color}, #050505);"></div>
+                <div style="max-width: 680px; margin: 0 auto; color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8;">
+                    <p>This is a placeholder for ${item.title}.</p>
+                </div>
+                `;
+            }
+
+            document.getElementById('detail-content').innerHTML = content;
+
+            // Update Back Button Target
+            document.getElementById('back-btn').onclick = () => navigate(type);
+            document.getElementById('back-btn').innerText = type === 'writing' ? '← Back to Writings' : '← Back to Work';
+
+            // Navigate to Detail Section (we reuse one detail container)
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById('detail').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
